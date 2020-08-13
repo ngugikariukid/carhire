@@ -14,7 +14,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class AdminHome extends AppCompatActivity {
     private FirebaseAuth auth;
     private ProgressBar progressBar;
-    private Button addcar, deletecar, orders, logout;
+    private Button addcar, orders, logout;
     private FirebaseAuth.AuthStateListener authListener;
 
     @Override
@@ -23,7 +23,7 @@ public class AdminHome extends AppCompatActivity {
         setContentView(R.layout.admin_homepage);
 
         addcar = (Button) findViewById(R.id.addcar);
-        deletecar = (Button) findViewById(R.id.deletecars);
+
         orders = (Button) findViewById(R.id.orders);
         logout = (Button) findViewById(R.id.logout);
 
@@ -33,12 +33,7 @@ public class AdminHome extends AppCompatActivity {
                 startActivity(new Intent(AdminHome.this, AddCar.class));
             }
         });
-        deletecar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(AdminHome.this, RemoveCar.class));
-            }
-        });
+
         orders.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -64,6 +64,11 @@
         </activity>
         <activity android:name=".Deposit">
         </activity>
+        <activity android:name=".DeletedModel">
+        </activity>
+        <activity android:name=".ExpensesModel">
+        </activity>
+
 
     </application>
 
