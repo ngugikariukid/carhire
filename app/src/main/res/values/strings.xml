@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Car Loan</string>
+    <string name="app_name">Car Hire</string>
     <string name="action_sign_in_short">Register</string>
     <string name="email">Email</string>
     <string name="minimum_password">Password too short, enter minimum 6 characters!</string>
@@ -118,6 +118,11 @@
     <string name="approave">Approave</string>
     <string name="deny">Deny</string>
     <string name="vieworders1">View Orders</string>
+    <string name="debit">Load Money</string>
+    <string name="account">Account Balance</string>
+    <string name="addmonies">Add any amount to your account to be able to order cars</string>
+    <string name="depo">Deposit Amount</string>
+    <string name="amount">Enter Amount</string>
 
 
 </resources>

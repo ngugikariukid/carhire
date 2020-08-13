@@ -10,15 +10,6 @@ public class OrdersModel {
     String CarId;
     String pickDate;
     String returnDate;
-
-    public Boolean getStatus() {
-        return status;
-    }
-
-    public void setStatus(Boolean status) {
-        this.status = status;
-    }
-
     Boolean status;
     int totalPrice;
 
@@ -30,6 +21,13 @@ public class OrdersModel {
         this.pickDate = pickDate;
         this.returnDate = returnDate;
         this.totalPrice = totalPrice;
+        this.status = status;
+    }
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
         this.status = status;
     }
 

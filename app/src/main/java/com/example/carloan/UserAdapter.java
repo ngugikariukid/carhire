@@ -27,6 +27,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
 
     Context context;
     ArrayList <OrdersModel> candidates;
+    private DatabaseReference reference;
+    Boolean check;
 
     public UserAdapter (Context c, ArrayList<OrdersModel> p){
         context = c;
@@ -35,7 +37,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.orderscardview, parent, false));
+        return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.userorderscardview, parent, false));
     }
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
@@ -47,6 +49,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
         final String orderid = candidates.get(position).getOrderkey();
         String insertorder  = "Order ID: "+orderid;
 
+        Boolean statusorder = candidates.get(position).getStatus();
+        if (statusorder == true) { //has been approaved
+            holder.status.setText("Order was APPROAVED");
+        } else {
+            holder.status.setText("Order PENDING");
+        }
+
+
         DatabaseReference reference;
         reference = FirebaseDatabase.getInstance().getReference();
         Query getcar = reference.child("cars").orderByChild("key").equalTo(carId);
@@ -55,14 +65,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String model;
                 String year;
-                System.out.println("Datasnap: " +dataSnapshot);
+                //System.out.println("Datasnap: " +dataSnapshot);
                 if (dataSnapshot.exists()) {
-                    System.out.print("Inside datasnapshot");
+                    //System.out.print("Inside datasnapshot");
                     for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                         CarModel p = dataSnapshot1.getValue(CarModel.class);
                         model = p.getModel();
                         year = p.getYear();
-                        System.out.println("fetched data inside datasnapshot: " + model + " and " + year);
+                        //System.out.println("fetched data inside datasnapshot: " + model + " and " + year);
                         holder.nameyear.setText(model + " | "+ year);
                     }
                 }else {
@@ -75,31 +85,16 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
             }
         });
 
-
         holder.texttu.setText(insertorder);
         String insertamount = "Ksh. "+amount;
         String emaill = "Email: "+ email;
-        holder.customer.setText(emaill);
+        //holder.customer.setText(emaill);
         String fromtoo = "From: " + pick + " | " + returndate;
         holder.fromto.setText(fromtoo);
 
         holder.price.setText(insertamount);
-        holder.deny.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-        holder.approve.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setCarAvailability(carId);
-                setOrderStatus(orderid);
-                //Here we accept the order. And set its availability of car to false and set the order to True
-                context.startActivity(new Intent(context, MainPage.class));
-            }
-        });
     }
+
     private void setOrderStatus(String orderid) {
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         mDatabase.child("orders").child(orderid).child("status").setValue(true);
@@ -117,18 +112,17 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
 
     class MyViewHolder extends RecyclerView.ViewHolder{
 
-        TextView nameyear, customer, fromto, price, texttu;
-        Button deny, approve;
+        TextView nameyear,  fromto, price, texttu, status;
+
 
         public MyViewHolder(View itemView) {
             super(itemView);
             nameyear = (TextView) itemView.findViewById(R.id.nameyear);
-            customer = (TextView) itemView.findViewById(R.id.customer);
+
             fromto = (TextView) itemView.findViewById(R.id.fromto);
             price = (TextView) itemView.findViewById(R.id.price);
             texttu = (TextView) itemView.findViewById(R.id.texttu);
-            deny = (Button) itemView.findViewById(R.id.deny);
-            approve = (Button) itemView.findViewById(R.id.approve);
+            status = (TextView) itemView.findViewById(R.id.status);
         }
     }
 

@@ -22,56 +22,46 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <ImageView
-            android:id="@+id/profilepic"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="5dp"
-             />
-
         <TextView
-            android:id="@+id/nameyear"
+            android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Name / Year"
+            android:text="Firstname / LastName"
             android:textAlignment="center"
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textStyle="bold" />
         <TextView
-            android:id="@+id/colortrans"
+            android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Color / Transmission"
+            android:text="Email"
             android:textAlignment="center" />
         <TextView
-            android:id="@+id/availability"
+            android:id="@+id/dl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Availability"
-            android:textSize="16sp"
-            android:textStyle="bold"
+            android:text="Driver's Licence"
             android:textAlignment="center" />
 
         <TextView
-            android:id="@+id/price"
+            android:id="@+id/balance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
-            android:text="Price"
+            android:text="Bal: Ksh 0"
             android:textAlignment="center" />
 
         <Button
-            android:id="@+id/book"
+            android:id="@+id/load"
             style="?android:textAppearanceSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:background="@color/colorAccent"
-            android:text="@string/book"
+            android:text="@string/debit"
             android:textColor="@android:color/black"
             android:textStyle="bold" />
 

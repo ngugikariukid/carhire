@@ -8,7 +8,7 @@
     android:layout_marginEnd="16dp"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
-    android:layout_marginStart="10dp"
+    android:layout_marginStart="16dp"
 
     android:layout_marginTop="8dp">
 
@@ -22,58 +22,49 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <ImageView
-            android:id="@+id/profilepic"
+        <TextView
+            android:id="@+id/texttu"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="5dp"
-             />
-
+            android:layout_height="wrap_content"
+            android:text="Order ID: "
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            android:textStyle="bold" />
         <TextView
             android:id="@+id/nameyear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Name / Year"
+            android:text="Car ID:"
             android:textAlignment="center"
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textStyle="bold" />
+
         <TextView
-            android:id="@+id/colortrans"
+            android:id="@+id/fromto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Color / Transmission"
-            android:textAlignment="center" />
-        <TextView
-            android:id="@+id/availability"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="Availability"
-            android:textSize="16sp"
-            android:textStyle="bold"
+            android:text="From: | To: "
             android:textAlignment="center" />
 
         <TextView
             android:id="@+id/price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:text="Price"
+            android:layout_marginTop="4dp"
+            android:text="Order Amount"
             android:textAlignment="center" />
 
-        <Button
-            android:id="@+id/book"
-            style="?android:textAppearanceSmall"
+        <TextView
+            android:id="@+id/status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@color/colorAccent"
-            android:text="@string/book"
-            android:textColor="@android:color/black"
-            android:textStyle="bold" />
+            android:layout_marginTop="4dp"
+            android:text="Order Status: "
+            android:textAlignment="center" />
+
 
     </LinearLayout>
 

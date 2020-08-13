@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,6 +28,10 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.MyViewHold
 
     Context context;
     ArrayList <OrdersModel> candidates;
+    private DatabaseReference reference;
+    int total =0, balannce, afterd;
+    private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
 
     public OrdersAdapter (Context c, ArrayList<OrdersModel> p){
         context = c;
@@ -39,13 +44,24 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.MyViewHold
     }
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
-        String email = candidates.get(position).getBookerEmail();
+        final String email = candidates.get(position).getBookerEmail();
         final String carId = candidates.get(position).getCarId();
         String pick = candidates.get(position).getPickDate();
         String returndate = candidates.get(position).getReturnDate();
-        int amount = candidates.get(position).getTotalPrice();
+        final int amount = candidates.get(position).getTotalPrice();
         final String orderid = candidates.get(position).getOrderkey();
         String insertorder  = "Order ID: "+orderid;
+        Boolean orderstatus = candidates.get(position).getStatus();
+
+        if(orderstatus){ //The order has not been dealt with
+            //holder.approve.setEnabled(false);
+            holder.approve.setVisibility(View.GONE);
+            //holder.deny.setEnabled(false);
+            holder.deny.setVisibility(View.GONE);
+            holder.texttu.setText("This order has been approaved");
+        }else{
+            holder.texttu.setText(insertorder);
+        }
 
         DatabaseReference reference;
         reference = FirebaseDatabase.getInstance().getReference();
@@ -76,7 +92,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.MyViewHold
         });
 
 
-        holder.texttu.setText(insertorder);
+
         String insertamount = "Ksh. "+amount;
         String emaill = "Email: "+ email;
         holder.customer.setText(emaill);
@@ -87,7 +103,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.MyViewHold
         holder.deny.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                denyOrder(orderid);
             }
         });
         holder.approve.setOnClickListener(new View.OnClickListener() {
@@ -95,11 +111,62 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.MyViewHold
             public void onClick(View view) {
                 setCarAvailability(carId);
                 setOrderStatus(orderid);
+                deductBalance(email, amount);
                 //Here we accept the order. And set its availability of car to false and set the order to True
-                context.startActivity(new Intent(context, MainPage.class));
+                context.startActivity(new Intent(context, AdminHome.class));
             }
         });
     }
+
+    private void denyOrder(String orderid) {
+        DatabaseReference mDatabasee = FirebaseDatabase.getInstance().getReference();
+        DeletedModel a = new DeletedModel(orderid);
+        mDatabasee.child("RejectedOrders").setValue(a);
+        Toast.makeText(context, "Order Rejected!", Toast.LENGTH_LONG);
+        context.startActivity(new Intent(context, AdminHome.class));
+    }
+
+    private void deductBalance(final String Email, final int amount) {
+
+        reference = FirebaseDatabase.getInstance().getReference();
+        Query presidentquery = reference.child("accountDeposits").orderByChild("userEmail").equalTo(Email);
+        presidentquery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                        AccountModel g = dataSnapshot1.getValue(AccountModel.class);
+                        balannce = Integer.parseInt(g.getBalance());
+                        total = total + balannce; //Total amount in user account
+                    }
+                    //bal.setText("Bal: Ksh. "+total);
+                    afterd = total - amount;
+                    createExpense(Email, amount);
+                    //complete(Email, afterd);
+                    //Now update user balance
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    private void createExpense(String email, int amount) {
+        DatabaseReference mDatabasee = FirebaseDatabase.getInstance().getReference();
+        ExpensesModel a = new ExpensesModel(email, amount);
+        String key = mDatabasee.push().getKey();
+        mDatabasee.child("Expenses").child(key).setValue(a);
+    }
+
+    public void complete(String email, int afterd) {
+        DatabaseReference mDatabasee = FirebaseDatabase.getInstance().getReference();
+        CustomerBalance cb = new CustomerBalance(email, afterd);
+        String key = mDatabasee.push().getKey();
+        mDatabasee.child("customerBalance").child(key).setValue(cb);
+        //Toast.makeText(context, "Car Availability Updated!", Toast.LENGTH_LONG);
+    }
+
     private void setOrderStatus(String orderid) {
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         mDatabase.child("orders").child(orderid).child("status").setValue(true);

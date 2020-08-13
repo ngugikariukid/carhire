@@ -51,7 +51,7 @@ public class AllCars extends AppCompatActivity {
         list_data=new ArrayList<>();
         reference = FirebaseDatabase.getInstance().getReference();
 
-        Query presidentquery = reference.child("cars").orderByChild("availability").equalTo(true);
+        Query presidentquery = reference.child("cars");
         presidentquery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

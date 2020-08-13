@@ -14,7 +14,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class MainPage extends AppCompatActivity {
     private FirebaseAuth auth;
     private ProgressBar progressBar;
-    private Button browse, orders, btnBack;
+    private Button browse, orders, btnBack, balance;
     private FirebaseAuth.AuthStateListener authListener;
 
     @Override
@@ -25,6 +25,7 @@ public class MainPage extends AppCompatActivity {
         browse = (Button) findViewById(R.id.browse);
         orders = (Button) findViewById(R.id.orders);
         btnBack = (Button) findViewById(R.id.btn_back);
+        balance = (Button) findViewById(R.id.account);
 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,6 +46,13 @@ public class MainPage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainPage.this, UserOrders.class));
+                //finish();
+            }
+        });
+        balance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainPage.this, Account.class));
                 //finish();
             }
         });

@@ -74,6 +74,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             holder.available.setText("AVAILABLE");
         }else{
             holder.available.setText("Not Available");
+            holder.book.setVisibility(View.GONE);
         }
         holder.price.setText(pricee);
         holder.book.setOnClickListener(new View.OnClickListener() {
@@ -109,28 +110,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         });
     }
 
-    /*public void d(){
-        String Storage_Path = "images/";
-        StorageReference mImageRef = FirebaseStorage.getInstance().getReference(Storage_Path + carId +".jpg");
-        final long ONE_MEGABYTE = 1024 * 1024;
-        mImageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new onSuccessListener<byte[]>(){
-            @Override
-            public void onSuccess(byte[] bytes){
-                Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                DisplayMetrics dm = new DisplayMetrics();
-                getWindowManager().getDefaultDisplay.getMetrics(dm);
-
-                holder.profilepic.setMaxHeight(dm.heightPixels);
-                holder.profilepic.setMinimumWidth(dm.widthPixels);
-                holder.profilepic.setImageBitmap(bm);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-            }
-        });
-    }*/
     @Override
     public int getItemCount() {
         return candidates.size();
@@ -149,7 +128,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             available = (TextView) itemView.findViewById(R.id.availability);
             price = (TextView) itemView.findViewById(R.id.price);
             book = (Button) itemView.findViewById(R.id.book);
-
             profilepic = (ImageView) itemView.findViewById(R.id.profilepic);
         }
     }

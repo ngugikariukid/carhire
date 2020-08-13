@@ -2,8 +2,11 @@ package com.example.carloan;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -36,15 +39,15 @@ public class TryPicker extends AppCompatActivity implements
 
     Button pickb, returnb, book;
     private FirebaseAuth mAuth;
+    private FirebaseAuth mmAuth;
     EditText pick, returned;
     private int mYear, mMonth, mDay;
     int pickk, returnn;
     String pickString;
     String returnString;
+    int total =0, balannce;
     public DatabaseReference reference;
     DatabaseReference databaseReference;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +58,9 @@ public class TryPicker extends AppCompatActivity implements
         returnb=(Button)findViewById(R.id.returnb);
         pick=(EditText)findViewById(R.id.pick);
         returned=(EditText)findViewById(R.id.returned);
+        mmAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        reference = FirebaseDatabase.getInstance().getReference();
 
         databaseReference = FirebaseDatabase.getInstance().getReference("orders");
         pickb.setOnClickListener(this);
@@ -106,18 +112,56 @@ public class TryPicker extends AppCompatActivity implements
         if(v == book){
             int newD = returnn-pickk;
             Boolean defaultStatus = false;
-            String carId, pric;
+            final String carId, pric;
             Intent intent =  getIntent();
             carId = intent.getStringExtra("carId");
             pric = intent.getStringExtra("priceperD");
             int pricetouse = Integer.parseInt(pric);
-            int totalprice= pricetouse * newD;
-            String todayDate = Calendar.getInstance().getTime().toString();
-            mAuth = FirebaseAuth.getInstance();
-            String LoggedUserEmail= mAuth.getCurrentUser().getEmail();
-            final String orderkey = databaseReference.push().getKey();
-            insertData(orderkey, todayDate, LoggedUserEmail, carId, pickString, returnString, totalprice, false);
-            startActivity(new Intent(TryPicker.this, MainPage.class));
+            final int totalprice= pricetouse * newD;
+            //First confirm the guys balance beofre proceeding:
+            final String LoggedUserEmail= mAuth.getCurrentUser().getEmail();
+
+            Query presidentquery = reference.child("accountDeposits").orderByChild("userEmail").equalTo(LoggedUserEmail);
+            presidentquery.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                            AccountModel g = dataSnapshot1.getValue(AccountModel.class);
+                            balannce = Integer.parseInt(g.getBalance());
+                            total = total + balannce;
+                        }
+                        if(total < totalprice){
+                            AlertDialog.Builder builder1 = new AlertDialog.Builder(TryPicker.this);
+                            builder1.setMessage("Your account balance is not sufficient to hire this car. Please top up");
+                            builder1.setCancelable(true);
+
+                            builder1.setPositiveButton(
+                                    "Ok",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            Toast.makeText(TryPicker.this, "You have insufficient balance", Toast.LENGTH_LONG);
+                                            startActivity(new Intent(TryPicker.this, Account.class));
+                                            finish();
+                                        }
+                                    });
+                            AlertDialog alert11 = builder1.create();
+                            alert11.show();
+
+                        }else{ //amount is sufficient
+                            String todayDate = Calendar.getInstance().getTime().toString();
+                            //String LoggedUserEmail= mAuth.getCurrentUser().getEmail();
+                            final String orderkey = databaseReference.push().getKey();
+                            insertData(orderkey, todayDate, LoggedUserEmail, carId, pickString, returnString, totalprice, false);
+                            startActivity(new Intent(TryPicker.this, MainPage.class));
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+
         }
     }
     public void insertData(String orderKey, String orderDate, String bookerEmail, String CarId, String pickDate, String returnDate, int totalPrice, Boolean status){
